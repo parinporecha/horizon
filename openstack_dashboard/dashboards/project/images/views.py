@@ -52,3 +52,12 @@ class IndexView(tables.DataTableView):
             images = []
             exceptions.handle(self.request, _("Unable to retrieve images."))
         return images
+
+    def get_building_images_data(self):
+         # FIXME Add Pagination
+         try:
+             images = api.imagefactory.image_list(self.request)
+         except:
+             images = []
+             exceptions.handle(self.request, _("Unable to retrieve images."))
+         return images

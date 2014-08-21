@@ -183,6 +183,28 @@ class CreateImageForm(forms.SelfHandlingForm):
             exceptions.handle(request, _('Unable to create new image.'))
 
 
+class BuildImageForm(forms.SelfHandlingForm):
+    template = forms.CharField(max_length="5000", label=_("Template XML"),
+                               required=True,
+                               widget=forms.widgets.Textarea(attrs={'class':'template'}))
+
+    kickstart = forms.CharField(max_length="5000", label=_("Kickstart contents"),
+                               required=False,
+                               widget=forms.widgets.Textarea(attrs={'class':'template'}))
+
+    properties = forms.CharField(max_length="5000", label=_("Glance custom properties"),
+                               required=False,
+                               widget=forms.widgets.Textarea(attrs={'class':'template'}))
+
+    def handle(self, request, data):
+        try:
+            image = api.imagefactory.image_create(request, data['template'], data['kickstart'], data['properties'])
+            messages.success(request,_('Your image %s has been queued for creation.'))
+            return image
+        except:
+            exceptions.handle(request, _('Unable to create new image.'))
+
+
 class UpdateImageForm(forms.SelfHandlingForm):
     image_id = forms.CharField(widget=forms.HiddenInput())
     name = forms.CharField(max_length="255", label=_("Name"))

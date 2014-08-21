@@ -29,6 +29,7 @@ VIEWS_MOD = 'openstack_dashboard.dashboards.project.images.images.views'
 
 urlpatterns = patterns(VIEWS_MOD,
     url(r'^create/$', views.CreateView.as_view(), name='create'),
+    url(r'^build/$', views.BuildView.as_view(), name='build'),
     url(r'^(?P<image_id>[^/]+)/update/$',
         views.UpdateView.as_view(), name='update'),
     url(r'^(?P<image_id>[^/]+)/$', views.DetailView.as_view(), name='detail'),

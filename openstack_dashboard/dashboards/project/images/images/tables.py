@@ -76,10 +76,18 @@ class DeleteImage(tables.DeleteAction):
 
 class CreateImage(tables.LinkAction):
     name = "create"
-    verbose_name = _("Create Image")
+    verbose_name = _("Upload Image")
     url = "horizon:project:images:images:create"
     classes = ("ajax-modal", "btn-create")
     policy_rules = (("image", "add_image"),)
+
+
+class BuildImage(tables.LinkAction):
+    name = "build"
+    verbose_name = _("Build Image")
+    url = "horizon:project:images:images:build"
+    classes = ("ajax-modal", "btn-create")
+    policy_rules = (("image", "build_image"),)
 
 
 class EditImage(tables.LinkAction):
@@ -196,6 +204,24 @@ class UpdateRow(tables.Row):
             self.classes.append('category-' + category)
 
 
+class UpdateBuildingImageRow(tables.Row):
+    ajax = True
+
+    def get_data(self, request, image_id):
+        image = api.imagefactory.image_get(request, image_id)
+        return image
+
+class DeleteBuild(tables.LinkAction):
+    name = "delete"
+    verbose_name = _("Delete")
+    url = "horizon:project:images_and_snapshots:builds:delete"
+    classes = ("ajax-modal", "btn-delete")
+    policy_rules = (("image", "delete_image"),)
+
+    def allowed(self, request, image=None):
+        return True
+
+
 class ImagesTable(tables.DataTable):
     STATUS_CHOICES = (
         ("active", True),
@@ -231,7 +257,29 @@ class ImagesTable(tables.DataTable):
         row_class = UpdateRow
         status_columns = ["status"]
         verbose_name = _("Images")
-        table_actions = (OwnerFilter, CreateImage, DeleteImage,)
+        table_actions = (BuildImage, OwnerFilter, CreateImage, DeleteImage,)
         row_actions = (LaunchImage, CreateVolumeFromImage,
                        EditImage, DeleteImage,)
         pagination_param = "image_marker"
+
+class BuildingImagesTable(tables.DataTable):
+    name = tables.Column("name",
+                         link=("horizon:project:images:images:detail"),
+                         verbose_name=_("Image Name"))
+    template = tables.Column("template",
+                             link=("horizon:project:images:images:detail"),
+                              verbose_name=_("Template"))
+    os_name = tables.Column("os_name",
+                              verbose_name=_("Operating System"))
+    arch = tables.Column("arch",
+                              verbose_name=_("Arch"))
+    description = tables.Column("description",
+                              verbose_name=_("Description"))
+    status = tables.Column("status",
+                           verbose_name=_("Status"))
+
+    class Meta:
+        name = "building_images"
+        row_class = UpdateBuildingImageRow
+        verbose_name = _("Image Factory")
+        row_actions = (DeleteBuild, EditImage)#, DeleteImageBuild]

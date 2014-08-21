@@ -45,6 +45,13 @@ class CreateView(forms.ModalFormView):
     success_url = reverse_lazy("horizon:project:images:index")
 
 
+class BuildView(forms.ModalFormView):
+     form_class = project_forms.BuildImageForm
+     template_name = 'project/images/images/build.html'
+     context_object_name = 'image'
+     success_url = reverse_lazy("horizon:project:images:index")
+
+
 class UpdateView(forms.ModalFormView):
     form_class = project_forms.UpdateImageForm
     template_name = 'project/images/images/update.html'

@@ -47,6 +47,7 @@ from openstack_dashboard.api import nova
 from openstack_dashboard.api import swift
 from openstack_dashboard.api import trove
 from openstack_dashboard.api import vpn
+from openstack_dashboard.api import imagefactory
 
 
 __all__ = [
@@ -64,4 +65,5 @@ __all__ = [
     "ceilometer",
     "trove",
     "vpn",
+    "imagefactory",
 ]
